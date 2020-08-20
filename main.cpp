@@ -104,101 +104,129 @@ void PainelDoDesenho::AlterarRotatacao(int graus) {
 
 // Metodo para desenhar um triangulo com textura
 void PainelDoDesenho::DesenharTriangulo(wxPaintDC* ptDC, Vertice v1, Vertice v2, Vertice v3) {
-    // O mapeamento de texturas e' feito junto da rasterizacao, por isso este metodo e' ao mesmo
-    // tempo rasterizacao de triangulos e mapeamento de texturas.
-    // Para acessar as coordenadas dos vertices use o atributo publico pos. Ex.: v1.pos.X()
-    // A interface permite implementacao de mapeamento linear e nao-linear. O atributo booleano
-    // mMapeamentoNaoLinear indica se o mapeamento nao linear está selecionado na interface.
-    // Mapeamento nao linear e' a opcao padrao na interface. O enunciado define quais mapeamentos
-    // devem ser implementados.
-    // Para desenhar um pixel, mude a "caneta" usada no DC e depois use o metodo DrawPoint(int,int).
     wxPen pen(*wxBLUE_PEN); // caneta local para escolher a cor do pixel
-    // Ex.:
-    //      pen.SetColour(mPtTextura->ColourAt(uinvz/invz, vinvz/invz)); // selecionar cor pela textura
-    //      ptDC->SetPen(pen); // mudar a cor corrente
-    //      ptDC->DrawPoint(x, y); // desenhar com a cor corrente
 
-    Vertice vertices[3] = {v1, v2, v3};
-    Ponto p1 = vertices[0].pos;
-    Ponto p2 = vertices[1].pos;
-    Ponto p3 = vertices[2].pos;
-    CoordTex tex1 = vertTri[0].tex, tex2 = vertTri[1].tex, tex3 = vertTri[2].tex;
-
-    double gradienten1Y = ((1/p2.Z()) - (1/p3.Z())) * (p3.X() - p1.X())+(p3.X() - p2.X())*( (1/p3.Z()) - (1/p1.Z()) )/((p2.Y() - p3.Y())*(p3.X() - p1.X()))+((p3.X() - p2.X())*(p3.Y() - p1.Y()));
-    double gradienten1X = ((1/p3.Z()) - (1/p2.Z())) * (p3.Y() - p1.Y())+(p2.Y() - p3.Y())*( (1/p3.Z()) - (1/p1.Z()) )/((p3.X() - p2.X())*(p3.Y() - p1.Y()))+((p2.Y() - p3.Y())*(p3.X() - p1.X()));
+    double gradienten1Y = (((1/v2.pos.Z()) - (1/v3.pos.Z())) * (v3.pos.X() - v1.pos.X())
+        +(v3.pos.X() - v2.pos.X())*( (1/v3.pos.Z()) - (1/v1.pos.Z()) )) / (((v2.pos.Y() - v3.pos.Y())*(v3.pos.X() - v1.pos.X()))
+        +((v3.pos.X() - v2.pos.X())*(v3.pos.Y() - v1.pos.Y())));
+    double gradienten1X =  (( (1/v3.pos.Z()) - (1/v2.pos.Z())) * (v3.pos.Y() - v1.pos.Y())
+        +(v2.pos.Y() - v3.pos.Y())*( (1/v3.pos.Z()) - (1/v1.pos.Z()) )) / (((v3.pos.X() - v2.pos.X())*(v3.pos.Y() - v1.pos.Y()))
+        +((v2.pos.Y() - v3.pos.Y())*(v3.pos.X() - v1.pos.X())));
 
 
-    double gradientenUY = ((tex2.u/p2.Z()) - (tex3.u/p3.Z()))*(p3.X() - p1.X())+(p3.X() - p2.X())*((tex3.u/p3.Z())  - (tex1.u/p1.Z()) )/((p2.Y() - p3.Y())*(p3.X() - p1.X()))+((p3.X() - p2.X())*(p3.Y() - p1.Y()));
-    double gradientenUX = ((tex3.u/p3.Z()) - (tex2.u/p2.Z()) )*(p3.Y() - p1.Y())+(p2.Y() - p3.Y())* ((tex3.u/p3.Z()) - (tex1.u/p1.Z()))/((p3.X() - p2.X())*(p3.Y() - p1.Y()))+((p2.Y() - p3.Y())*(p3.X() - p1.X()));
+    double gradientenUY = (((v2.tex.u/v2.pos.Z())  - (v3.tex.u/v3.pos.Z()))*(v3.pos.X() - v1.pos.X())
+        +(v3.pos.X() - v2.pos.X())*((v3.tex.u/v3.pos.Z())  - (v1.tex.u/v1.pos.Z()) )) / (((v2.pos.Y() - v3.pos.Y())*(v3.pos.X() - v1.pos.X()))
+        +((v3.pos.X() - v2.pos.X())*(v3.pos.Y() - v1.pos.Y()))) ;
+    double gradientenUX = ( ( (v3.tex.u/v3.pos.Z()) - (v2.tex.u/v2.pos.Z()) )*(v3.pos.Y() - v1.pos.Y())
+        + (v2.pos.Y() - v3.pos.Y())* ((v3.tex.u/v3.pos.Z()) - (v1.tex.u/v1.pos.Z()))) / (((v3.pos.X() - v2.pos.X())*(v3.pos.Y() - v1.pos.Y()))
+        +((v2.pos.Y() - v3.pos.Y())*(v3.pos.X() - v1.pos.X())));
 
-    double gradientenVY = (((tex2.v/p2.Z()) - (tex3.v/p3.Z()) )*(p3.X() - p1.X()))+((p3.X() - p2.X())*((tex3.v/p3.Z())  - (tex1.v/p1.Z()) ))/((p2.Y() - p3.Y())*(p3.X() - p1.X()))+((p3.X() - p2.X())*(p3.Y() - p1.Y()));
-    double gradientenVX = (((tex3.v/p3.Z()) - (tex2.v/p2.Z()))*(p3.Y() - p1.Y()))+((p2.Y() - p3.Y())*((tex3.v/p3.Z()) - (tex1.v/p1.Z()) ))/((p3.X() - p2.X())*(p3.Y() - p1.Y()))+((p2.Y() - p3.Y())*(p3.X() - p1.X()));
+    double gradientenVY = ((((v2.tex.v/v2.pos.Z())  - (v3.tex.v/v3.pos.Z()) )*(v3.pos.X() - v1.pos.X()))
+        +((v3.pos.X() - v2.pos.X())*((v3.tex.v/v3.pos.Z())  - (v1.tex.v/v1.pos.Z()) ))) / (((v2.pos.Y() - v3.pos.Y())*(v3.pos.X() - v1.pos.X()))
+        +((v3.pos.X() - v2.pos.X())*(v3.pos.Y() - v1.pos.Y())));
+    double gradientenVX = ((((v3.tex.v/v3.pos.Z()) - (v2.tex.v/v2.pos.Z()))*(v3.pos.Y() - v1.pos.Y()))
+        +((v2.pos.Y() - v3.pos.Y())*((v3.tex.v/v3.pos.Z()) - (v1.tex.v/v1.pos.Z()) ))) / (((v3.pos.X() - v2.pos.X())*(v3.pos.Y() - v1.pos.Y()))
+        +((v2.pos.Y() - v3.pos.Y())*(v3.pos.X() - v1.pos.X()))) ;
 
-    //se o ponto p2 estiver embaixo do ponto p1, troque
+
     if(v2.pos.Y() < v1.pos.Y()) swap(v1, v2);
-    // Se o ponto p3 estiver embaixo do ponto p2, troque
     if(v3.pos.Y() < v2.pos.Y()) swap(v3, v2);
-    // Se novo ponto p2 estiver embaixo do ponto p1, troque
     if(v2.pos.Y() < v1.pos.Y()) swap(v1, v2);
-    
+
     double incXesq, incXdir;
 
-    //Se o ponto p2 estiver a direita do ponto p1
-    if(v2.pos.X() >= v1.pos.X()){
-        incXesq = double(v3.pos.X() - v1.pos.X())/double(v3.pos.Y() - v1.pos.Y());
+    if(v2.pos.X() >= v1.pos.X()) {
+        incXesq = double(v3.pos.X() - v1.pos.X()) /double(v3.pos.Y() - v1.pos.Y());
         incXdir = double(v2.pos.X() - v1.pos.X())/double(v2.pos.Y() - v1.pos.Y());
     } else {
-        incXdir = double(v3.pos.X() - v1.pos.X())/double(v3.pos.Y() - v1.pos.Y());
+        incXdir = double(v3.pos.X() - v1.pos.X()) /double(v3.pos.Y() - v1.pos.Y());
         incXesq = double(v2.pos.X() - v1.pos.X())/double(v2.pos.Y() - v1.pos.Y());
     }
 
     double xEsq = v1.pos.X();
     double xDir = v1.pos.X();
 
-    // Definição do valor minimo de Y para a parte inferior do triangulo
-    int yMin = v1.pos.Y();
-    int yMax = v2.pos.Y();
+    double yMin = v1.pos.Y();
+    double yMax = v2.pos.Y();
 
-    // Desenha os pixels da parte inferior do triangulo
-    for (int y = yMin; y < yMax; y++) {
+
+    double invz = 1/v1.pos.Z(), uinvz = v1.tex.u/v1.pos.Z(), vinvz = v1.tex.v/v1.pos.Z();
+    double invzReposicao = invz, uinvzReposicao = uinvz, vinvzReposicao = vinvz;
+
+    int y;
+
+    double u, v;
+
+    for (y = yMin; y < yMax; y++) {
         int x = int(xEsq);
-        while(x < int(xDir)){
-            pen.SetColour(mPtTextura->ColourAt(4,4));
-            //cout << "x: " << x << "\ny: " << y << endl;
-            ptDC->SetPen(pen);
-            ptDC->DrawPoint(x, y);
-            x++;
+        while(x < int(xDir)) {
+
+            u = uinvz/invz;
+            v = vinvz/invz;
+
+            pen.SetColour(mPtTextura->ColourAt(u, v)); // selecionar cor pela textura
+            ptDC->SetPen(pen); // mudar a cor corrente
+            ptDC->DrawPoint(x, y); // desenhar com a cor corrente
+            invz += gradienten1X;
+            uinvz += gradientenUX;
+            vinvz += gradientenVX;
+            ++x;
         }
-        //Incrementa o xDir e o xEsq
+
         xDir += incXdir;
         xEsq += incXesq;
+        invzReposicao += (incXesq*gradienten1X) + gradienten1Y;
+        invz = invzReposicao;
+        uinvzReposicao += (incXesq*gradientenUX) + gradientenUY;
+        uinvz = uinvzReposicao;
+        vinvzReposicao += (incXesq*gradientenVX) + gradientenVY;
+        vinvz = vinvzReposicao;
     }
 
-    // Se o X do ponto 2 for maior que o X do ponto 1
+
     if(v2.pos.X() >= v1.pos.X()){
         incXesq = double(v3.pos.X() - v1.pos.X())/double(v3.pos.Y() - v1.pos.Y());
         incXdir = double(v2.pos.X() - v3.pos.X())/double(v2.pos.Y() - v3.pos.Y());
         xDir = v2.pos.X();
-    } else { // se o x do ponto2 for menor que o x do ponto 1
+    } else {
         incXdir = double(v3.pos.X() - v1.pos.X())/double(v3.pos.Y() - v1.pos.Y());
         incXesq = double(v2.pos.X() - v3.pos.X())/double(v2.pos.Y() - v3.pos.Y());
         xEsq = v2.pos.X();
     }
 
+
     yMin = v2.pos.Y();
     yMax = v3.pos.Y();
 
-    // Desenha os pixels da metade superior do triangulo
-    for (int y = yMin; y < yMax; y++) {
+    invz = invzReposicao;
+    uinvz = uinvzReposicao;
+    vinvz = vinvzReposicao;
+
+    y = yMin;
+
+    for (y = yMin; y < yMax; y++) {
         int x = int(xEsq);
-        while (x < int(xDir)) {
-            pen.SetColour(mPtTextura->ColourAt(1,1));
-            ptDC->SetPen(pen);
-            ptDC->DrawPoint(x, y);
-            x++;
+        while(x < int(xDir)) {
+            u = uinvz/invz;
+            v = vinvz/invz;
+
+            pen.SetColour(mPtTextura->ColourAt(u, v)); // selecionar cor pela textura
+            ptDC->SetPen(pen); // mudar a cor corrente
+            ptDC->DrawPoint(x, y); // desenhar com a cor corrente
+            invz += gradienten1X;
+            uinvz += gradientenUX;
+            vinvz += gradientenVX;
+            ++x;
         }
+
         xDir += incXdir;
         xEsq += incXesq;
+        invzReposicao += (incXesq*gradienten1X) + gradienten1Y;
+        invz = invzReposicao;
+        uinvzReposicao += (incXesq*gradientenUX) + gradientenUY;
+        uinvz = uinvzReposicao;
+        vinvzReposicao += (incXesq*gradientenVX) + gradientenVY;
+        vinvz = vinvzReposicao;
     }
 }
 
