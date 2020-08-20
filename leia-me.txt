@@ -1,0 +1,27 @@
+    Este programa existe para facilitar a implementação do mapeamento de texturas no curso GCC124
+(Computação Gráfica) da UFLA sem que o aluno precise gastar tempo implementando uma interface
+para testar o mapeamento.
+
+    É possível abrir qualquer arquivo de imagem para usar como textura, porém o painel direito
+que mostra a imagem tem 256x256 pixels e não é feito redimensionamento. Assim, para que a
+interface fique bonita, esse deve ser o tamanho máximo da imagem.
+
+    O programa é genérico, permitindo desenhar qualquer polígono, com qualquer textura, porém,
+para facilitar a implementação da interface, um polígono pré-definido é criado e ele só pode ser
+transformado por uma única rotação pré-definida. Isso é uma limitação da interface e não do
+mapeamento. Não é permitido limitar o mapeamento.
+
+    O arquivo Makefile distribuido foi criado para compilação em Linux. Para compilar em Windows
+ou MacOS é preciso editar o Makefile, alterando as flags de compilação do wxWidgets, conforme
+estão nos exemplos de Makefile do wxWidgets.
+
+    Para implementar o mapeamento de texturas, basta completar o método
+PainelDoDesenho::DesenharTriangulo do arquivo main.cpp. A interface permite alterar entre
+mapeamento não linear e mapeamento linear. O enunciado da tarefa é que define o que precisa ser
+implementado.
+
+    DIREITO DE USO:
+    O aluno regularmente matriculado em GCC124 (Computação Gráfica) da UFLA tem o direito de uso
+da implementação para fins de aprendizagem, mas não tem o direito de publicar a implementação
+na internet. Confira a limitações sobre composição de grupos na descrição do trabalho. Não se
+aprende copiando, não facilite o plágio de outros.
