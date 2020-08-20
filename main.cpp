@@ -124,7 +124,6 @@ void PainelDoDesenho::DesenharTriangulo(wxPaintDC* ptDC, Vertice v1, Vertice v2,
     if(v3.pos.Y() < v2.pos.Y()) swap(v3, v2);
     // Se novo ponto p2 estiver embaixo do ponto p1, troque
     if(v2.pos.Y() < v1.pos.Y()) swap(v1, v2);
-
     
     double incXesq, incXdir;
 
@@ -144,74 +143,19 @@ void PainelDoDesenho::DesenharTriangulo(wxPaintDC* ptDC, Vertice v1, Vertice v2,
     int yMin = v1.pos.Y();
     int yMax = v2.pos.Y();
 
-    
-    // calculate start and end scanlines
-	const int yStart = (int)ceil( v1.pos.Y() - 0.5f );
-	const int yEnd = (int)ceil( v3.pos.Y() - 0.5f ); // the scanline AFTER the last line drawn
-    // coisas fora do for
-    // calulcate dVertex / dy juntamente com o interpolant prestep
-    const float delta_y = v3.pos.Y() - v1.pos.Y();
-    double dv1X = ((v3.pos.X() - v1.pos.X()) / delta_y)*2 * (float( yStart ) + 0.5f - v1.pos.Y());
-    double dv1Y = ((v3.pos.Y() - v1.pos.Y()) / delta_y)*2 * (float( yStart ) + 0.5f - v1.pos.Y());
-    double dv1Z = ((v3.pos.Z() - v1.pos.Z()) / delta_y)*2 * (float( yStart ) + 0.5f - v1.pos.Y());
-    Ponto* dv1 = new Ponto(dv1X, dv1Y, dv1Z);
-    double dv2X = ((v3.pos.X() - v2.pos.X()) / delta_y)*2 * (float( yStart ) + 0.5f - v1.pos.Y());
-    double dv2Y = ((v3.pos.Y() - v2.pos.Y()) / delta_y)*2 * (float( yStart ) + 0.5f - v1.pos.Y());
-    double dv2Z = ((v3.pos.Z() - v2.pos.Z()) / delta_y)*2 * (float( yStart ) + 0.5f - v1.pos.Y());
-    Ponto* dv2 = new Ponto(dv2X, dv2Y, dv2Z);
-    // create right edge interpolant
-    double itEdge2X = v2.pos.X();
-    double itEdge2Y = v2.pos.Y();
-    double itEdge2Z = v2.pos.Z();
-	// create edge interpolant for left edge (always v0)
-	double itEdge1X = v1.pos.X();
-    double itEdge1Y = v1.pos.Y();
-    double itEdge1Z = v1.pos.Z();
-
-
-	// init tex width/height and clamp values
-	const float tex_width = 255;
-	const float tex_height = 255;
-	const float tex_clamp_x = tex_width - 1.0f;
-	const float tex_clamp_y = tex_height - 1.0f;
-
-
     // Desenha os pixels da parte inferior do triangulo
-    for (int y = yStart; y < yEnd; y++) {
-        //int x = int(xEsq);
-        itEdge1X += dv1->X();
-        itEdge1Y += dv1->Y();
-        itEdge1Z += dv1->Z();
-
-        itEdge2X += dv2->X();
-        itEdge2Y += dv2->Y();
-        itEdge2Z += dv2->Z();
-
-		// calculate start and end pixels
-		int xStart = (int)ceil( itEdge1X - 0.5f );
-		int xEnd = (int)ceil( itEdge2X - 0.5f ); // the pixel AFTER the last pixel drawn
-		// calculate scanline dTexCoord / dx
-		double dtcLine = (itEdge2Z - itEdge1Z) / (itEdge2X - itEdge1X);
-		// create scanline tex coord interpolant and prestep
-		double itcLine = itEdge1Z + dtcLine * (float( xStart ) + 0.5f - itEdge1X);
-        for( int x = xStart; x < xEnd; x++,itcLine += dtcLine ) {
-            pen.SetColour(mPtTextura->ColourAt(int( std::fmod( itcLine * tex_width,tex_clamp_x)), int( std::fmod( itcLine * tex_height,tex_clamp_y))));
-            ptDC->SetPen(pen); // mudar a cor corrente
-            ptDC->DrawPoint(x, y); // desenhar com a cor corrente
+    for (int y = yMin; y < yMax; y++) {
+        int x = int(xEsq);
+        while(x < int(xDir)){
+            pen.SetColour(mPtTextura->ColourAt(4,4));
+            //cout << "x: " << x << "\ny: " << y << endl;
+            ptDC->SetPen(pen);
+            ptDC->DrawPoint(x, y);
+            x++;
         }
-
-        // while(x < int(xDir)){
-            
-        //     //PutPixel( x,y,tex.GetPixel(
-		// 	//int( std::fmod( itcLine.v * tex_width,tex_clamp_x ) ),
-		// 	//int( std::fmod( itcLine.u * tex_height,tex_clamp_y ) ) ) );
-            
-
-        //     x++;
-        // }
-        // Incrementa o xDir e o xEsq
-        //xDir += incXdir;
-        //xEsq += incXesq;
+        //Incrementa o xDir e o xEsq
+        xDir += incXdir;
+        xEsq += incXesq;
     }
 
     // Se o X do ponto 2 for maior que o X do ponto 1
@@ -231,17 +175,10 @@ void PainelDoDesenho::DesenharTriangulo(wxPaintDC* ptDC, Vertice v1, Vertice v2,
     // Desenha os pixels da metade superior do triangulo
     for (int y = yMin; y < yMax; y++) {
         int x = int(xEsq);
-
-
-
-        while(x < int(xDir)){
-
-
-
-
-            //pen.SetColour(mPtTextura->ColourAt(x/xEsq, y/xDir));
-            ptDC->SetPen(pen); // mudar a cor corrente
-            ptDC->DrawPoint(x, y); // desenhar com a cor corrente
+        while (x < int(xDir)) {
+            pen.SetColour(mPtTextura->ColourAt(1,1));
+            ptDC->SetPen(pen);
+            ptDC->DrawPoint(x, y);
             x++;
         }
         xDir += incXdir;
