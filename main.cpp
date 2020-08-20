@@ -118,6 +118,22 @@ void PainelDoDesenho::DesenharTriangulo(wxPaintDC* ptDC, Vertice v1, Vertice v2,
     //      ptDC->SetPen(pen); // mudar a cor corrente
     //      ptDC->DrawPoint(x, y); // desenhar com a cor corrente
 
+    Vertice vertices[3] = {v1, v2, v3};
+    Ponto p1 = vertices[0].pos;
+    Ponto p2 = vertices[1].pos;
+    Ponto p3 = vertices[2].pos;
+    CoordTex tex1 = vertTri[0].tex, tex2 = vertTri[1].tex, tex3 = vertTri[2].tex;
+
+    double gradienten1Y = ((1/p2.Z()) - (1/p3.Z())) * (p3.X() - p1.X())+(p3.X() - p2.X())*( (1/p3.Z()) - (1/p1.Z()) )/((p2.Y() - p3.Y())*(p3.X() - p1.X()))+((p3.X() - p2.X())*(p3.Y() - p1.Y()));
+    double gradienten1X = ((1/p3.Z()) - (1/p2.Z())) * (p3.Y() - p1.Y())+(p2.Y() - p3.Y())*( (1/p3.Z()) - (1/p1.Z()) )/((p3.X() - p2.X())*(p3.Y() - p1.Y()))+((p2.Y() - p3.Y())*(p3.X() - p1.X()));
+
+
+    double gradientenUY = ((tex2.u/p2.Z()) - (tex3.u/p3.Z()))*(p3.X() - p1.X())+(p3.X() - p2.X())*((tex3.u/p3.Z())  - (tex1.u/p1.Z()) )/((p2.Y() - p3.Y())*(p3.X() - p1.X()))+((p3.X() - p2.X())*(p3.Y() - p1.Y()));
+    double gradientenUX = ((tex3.u/p3.Z()) - (tex2.u/p2.Z()) )*(p3.Y() - p1.Y())+(p2.Y() - p3.Y())* ((tex3.u/p3.Z()) - (tex1.u/p1.Z()))/((p3.X() - p2.X())*(p3.Y() - p1.Y()))+((p2.Y() - p3.Y())*(p3.X() - p1.X()));
+
+    double gradientenVY = (((tex2.v/p2.Z()) - (tex3.v/p3.Z()) )*(p3.X() - p1.X()))+((p3.X() - p2.X())*((tex3.v/p3.Z())  - (tex1.v/p1.Z()) ))/((p2.Y() - p3.Y())*(p3.X() - p1.X()))+((p3.X() - p2.X())*(p3.Y() - p1.Y()));
+    double gradientenVX = (((tex3.v/p3.Z()) - (tex2.v/p2.Z()))*(p3.Y() - p1.Y()))+((p2.Y() - p3.Y())*((tex3.v/p3.Z()) - (tex1.v/p1.Z()) ))/((p3.X() - p2.X())*(p3.Y() - p1.Y()))+((p2.Y() - p3.Y())*(p3.X() - p1.X()));
+
     //se o ponto p2 estiver embaixo do ponto p1, troque
     if(v2.pos.Y() < v1.pos.Y()) swap(v1, v2);
     // Se o ponto p3 estiver embaixo do ponto p2, troque
