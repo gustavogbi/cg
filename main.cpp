@@ -112,7 +112,7 @@ void PainelDoDesenho::DesenharTriangulo(wxPaintDC* ptDC, Vertice v1, Vertice v2,
     double um_zy = (((1/v2.pos.Z()) - (1/v3.pos.Z())) * (v3.pos.X() - v1.pos.X()) + (v3.pos.X() - v2.pos.X()) * ((1/v3.pos.Z()) - (1/v1.pos.Z()))) / denominador_y;
     double um_zx = (((1/v3.pos.Z()) - (1/v2.pos.Z())) * (v3.pos.Y() - v1.pos.Y()) + (v2.pos.Y() - v3.pos.Y()) * ((1/v3.pos.Z()) - (1/v1.pos.Z()))) / denominador_x;
 
-    double uzy = (((v2.tex.u/v2.pos.Z()) - (v3.tex.u/v3.pos.Z())) * (v3.pos.X() - v1.pos.X())+(v3.pos.X() - v2.pos.X()) * ((v3.tex.u/v3.pos.Z()) - (v1.tex.u/v1.pos.Z()))) / denominador_y;
+    double uzy = (((v2.tex.u/v2.pos.Z()) - (v3.tex.u/v3.pos.Z())) * (v3.pos.X() - v1.pos.X()) + (v3.pos.X() - v2.pos.X()) * ((v3.tex.u/v3.pos.Z()) - (v1.tex.u/v1.pos.Z()))) / denominador_y;
     double uzx = (((v3.tex.u/v3.pos.Z()) - (v2.tex.u/v2.pos.Z())) * (v3.pos.Y() - v1.pos.Y()) + (v2.pos.Y() - v3.pos.Y()) * ((v3.tex.u/v3.pos.Z()) - (v1.tex.u/v1.pos.Z()))) / denominador_x;
 
     double vzy = ((((v2.tex.v/v2.pos.Z()) - (v3.tex.v/v3.pos.Z())) * (v3.pos.X() - v1.pos.X())) + ((v3.pos.X() - v2.pos.X()) * ((v3.tex.v/v3.pos.Z()) - (v1.tex.v/v1.pos.Z())))) / denominador_y;
