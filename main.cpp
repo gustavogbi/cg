@@ -3,6 +3,9 @@
 // Criado por Bruno Schneider a partir do exemplo "cube.cpp" do wxWidgets.
 // (C) Bruno Schneider - DCC / UFLA - Julho de 2017
 
+// Gustavo Rodrigues Sousa
+// método modificado: PainelDoDesenho::DesenharTriangulo
+
 #include "wx/wxprec.h"
 
 #ifndef WX_PRECOMP
